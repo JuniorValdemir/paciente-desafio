@@ -1,0 +1,4 @@
+db.url=jdbc:postgresql://localhost:5432/banco
+db.user=
+db.password=
+db.driver=org.postgresql.Driver

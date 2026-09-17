@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<head>
+    <title>Relatório de Pacientes</title>
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: #ffffff;
+            padding: 36px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            width: 100%;
+            max-width: 900px;
+            border: 1px solid #e2e8f0;
+        }
+        .header-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        h2 {
+            margin: 0;
+            color: #0f172a;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .table-pacientes {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 28px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .table-pacientes th {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .table-pacientes td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+            color: #475569;
+        }
+        .table-pacientes tr:last-child td {
+            border-bottom: none;
+        }
+        .table-pacientes tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        /* Botões Globais */
+        .btn-novo, .btn-pdf, .btn-voltar, .btn-acao {
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-novo {
+            background-color: #10b981;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+        .btn-novo:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-pdf {
+            background-color: #0284c7;
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.2);
+        }
+        .btn-pdf:hover {
+            background-color: #0369a1;
+            transform: translateY(-1px);
+        }
+
+        .btn-voltar {
+            background-color: #f1f5f9;
+            color: #475569;
+            padding: 8px 16px;
+            font-size: 13px;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-voltar:hover {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .btn-acao {
+            padding: 6px 12px;
+            font-size: 12px;
+            margin-right: 6px;
+        }
+        .btn-editar {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .btn-editar:hover {
+            background-color: #fde68a;
+        }
+        .btn-excluir {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .btn-excluir:hover {
+            background-color: #fecaca;
+        }
+
+        .alert-message {
+            display: block;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .empty-message {
+            padding: 30px;
+            background-color: #f8fafc;
+            color: #64748b;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 15px;
+            margin-bottom: 28px;
+            border: 1px dashed #cbd5e1;
+        }
+        .footer-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h:form id="formLista">
+        <div class="header-area">
+            <h2>Relatório de Pacientes Cadastrados</h2>
+            <h:commandButton value="← Voltar ao Início"
+                             action="#{pacienteBean.voltarIndex}"
+                             immediate="true"
+                             styleClass="btn-voltar" />
+        </div>
+
+        <h:outputText value="#{pacienteBean.mensagem}"
+                      rendered="#{not empty pacienteBean.mensagem}"
+                      styleClass="alert-message" />
+
+        <h:panelGroup rendered="#{empty pacienteBean.pacientes}">
+            <div class="empty-message">
+                Nenhum paciente cadastrado até o momento.
+            </div>
+        </h:panelGroup>
+
+        <h:dataTable value="#{pacienteBean.pacientes}" var="p"
+                     styleClass="table-pacientes"
+                     rendered="#{not empty pacienteBean.pacientes}">
+            <h:column>
+                <f:facet name="header">ID</f:facet>
+                #{p.id}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Nome</f:facet>
+                #{p.nome}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Idade</f:facet>
+                #{p.idade}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Telefone</f:facet>
+                #{p.telefone}
+            </h:column>
+            <h:column>
+                <f:facet name="header">CPF</f:facet>
+                #{p.cpf}
+            </h:column>
+            <h:column>
+                <f:facet name="header">Ações</f:facet>
+                <h:commandButton value="Editar" action="#{pacienteBean.editar(p)}" styleClass="btn-acao btn-editar" />
+                <h:commandButton value="Excluir" action="#{pacienteBean.excluir(p)}" styleClass="btn-acao btn-excluir"
+                                 onclick="return confirm('Tem certeza que deseja excluir o paciente #{p.nome}?');" />
+            </h:column>
+        </h:dataTable>
+
+        <div class="footer-actions">
+            <h:commandButton value="Novo paciente" action="#{pacienteBean.novoPaciente}" immediate="true" styleClass="btn-novo" />
+            <h:commandButton value="Gerar PDF"
+                             onclick="alert('Tentativa de gerar o PDF do relatorio...NÃO CONCLUIDO!'); return false;"
+                             styleClass="btn-pdf" />
+        </div>
+    </h:form>
+</div>
+</body>
+</html>

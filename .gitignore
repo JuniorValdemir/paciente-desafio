@@ -1,0 +1,20 @@
+# Compilação e Build do Maven
+target/
+*.war
+*.ear
+*.jar
+
+# Arquivos do IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Configurações de Credenciais Locais
+src/main/resources/database.properties
+*.env
+
+# Logs do Servidor e Sistema
+*.log
+.cargo/

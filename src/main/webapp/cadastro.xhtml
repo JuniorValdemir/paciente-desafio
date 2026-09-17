@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+<head>
+    <title>Cadastro de Paciente</title>
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f1f5f9;
+            color: #334155;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 36px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            width: 100%;
+            max-width: 440px;
+            border: 1px solid #e2e8f0;
+        }
+
+        h2 {
+            margin: 0 0 24px 0;
+            color: #0f172a;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-align: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .form-grid {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .form-grid td {
+            padding: 10px 0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .form-control-line {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            font-size: 14px;
+            color: #0f172a;
+            outline: none;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-control-line:focus {
+            background-color: #ffffff;
+            border-color: #0284c7;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .btn-container {
+            margin-top: 28px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-salvar, .btn-cancelar {
+            font-family: inherit;
+            flex: 1;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        .btn-salvar {
+            background-color: #10b981;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-salvar:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-cancelar {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-cancelar:hover {
+            background-color: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .alert-message {
+            display: block;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+    </style>
+
+    <!-- CODIGO ESTÁ EM DESENVOLVIEMNTO PARA TRATAR CPF/TELEFONE (TENTATIVA DE CRIAR UMA MASCARA)-->
+    <script type="text/javascript">
+        //<![CDATA[
+        function apenasLetrasKey(event) {
+            let charCode = event.which ? event.which : event.keyCode;
+            if (charCode == 8 || charCode == 9 || charCode == 46 || charCode == 32 || (charCode >= 37 && charCode <= 40)) {
+                return true;
+            }
+            if (charCode >= 48 && charCode <= 57) {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+                return false;
+            }
+            return true;
+        }
+
+        function removerNumeros(input) {
+            input.value = input.value.replace(/[0-9]/g, "");
+        }
+
+        function apenasNumerosKey(event) {
+            let charCode = event.which ? event.which : event.keyCode;
+            if (charCode == 8 || charCode == 9 || charCode == 46 || (charCode >= 37 && charCode <= 40)) {
+                return true;
+            }
+            if (charCode < 48 || charCode > 57) {
+                if (event.preventDefault) {
+                    event.preventDefault();
+                }
+                return false;
+            }
+            return true;
+        }
+
+        function apenasNumeros(input) {
+            input.value = input.value.replace(/\D/g, "");
+        }
+
+        function mascararCPF(input) {
+            let v = input.value.replace(/\D/g, "");
+            v = v.substring(0, 11);
+
+            if (v.length > 9) {
+                v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2})$/, "$1.$2.$3-$4");
+            } else if (v.length > 6) {
+                v = v.replace(/^(\d{3})(\d{3})(\d{1,3})$/, "$1.$2.$3");
+            } else if (v.length > 3) {
+                v = v.replace(/^(\d{3})(\d{1,3})$/, "$1.$2");
+            }
+            input.value = v;
+        }
+
+        function mascararTelefone(input) {
+            let v = input.value.replace(/\D/g, "");
+            v = v.substring(0, 11);
+
+            if (v.length > 10) {
+                v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, "($1) $2-$3");
+            } else if (v.length > 6) {
+                v = v.replace(/^(\d{2})(\d{4,5})(\d{0,4})$/, "($1) $2-$3");
+            } else if (v.length > 2) {
+                v = v.replace(/^(\d{2})(\d{0,5})$/, "($1) $2");
+            } else if (v.length > 0) {
+                v = v.replace(/^(\d*)$/, "($1");
+            }
+            input.value = v;
+        }
+
+        //]]>
+    </script>
+</head>
+<body>
+<div class="card">
+    <h2>Cadastro de Paciente</h2>
+
+    <h:form id="formCadastro">
+        <h:inputHidden value="#{pacienteBean.paciente.id}"/>
+
+        <h:outputText value="#{pacienteBean.mensagem}"
+                      rendered="#{not empty pacienteBean.mensagem}"
+                      styleClass="alert-message #{pacienteBean.mensagem.contains('sucesso') ? 'alert-success' : 'alert-error'}"/>
+
+        <h:panelGrid columns="2" styleClass="form-grid" columnClasses="label-col, input-col">
+            <h:outputLabel value="Nome:" for="nome" styleClass="form-label"/>
+            <h:inputText id="nome" value="#{pacienteBean.paciente.nome}" styleClass="form-control-line"/>
+
+            <h:outputLabel value="Idade:" for="idade" styleClass="form-label"/>
+            <h:inputText id="idade" value="#{pacienteBean.paciente.idade}" styleClass="form-control-line"
+                         onkeypress="return apenasNumerosKey(event);"
+                         oninput="apenasNumeros(this);"
+                         maxlength="3"/>
+
+            <h:outputLabel value="Telefone:" for="telefone" styleClass="form-label"/>
+            <h:inputText id="telefone" value="#{pacienteBean.paciente.telefone}" styleClass="form-control-line"
+                         onkeypress="return apenasNumerosKey(event);"
+                         oninput="mascararTelefone(this);"
+                         maxlength="15"/>
+
+            <h:outputLabel value="CPF:" for="cpf" styleClass="form-label"/>
+            <h:inputText id="cpf" value="#{pacienteBean.paciente.cpf}" styleClass="form-control-line"
+                         onkeypress="return apenasNumerosKey(event);"
+                         oninput="mascararCPF(this);"
+                         maxlength="14"/>
+        </h:panelGrid>
+
+        <div class="btn-container">
+            <h:commandButton value="Salvar" action="#{pacienteBean.salvar}" styleClass="btn-salvar"/>
+            <h:commandButton value="Cancelar" action="#{pacienteBean.cancelar}" immediate="true"
+                             styleClass="btn-cancelar"/>
+        </div>
+    </h:form>
+</div>
+</body>
+</html>
